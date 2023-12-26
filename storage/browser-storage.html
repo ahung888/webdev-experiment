@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FileReader</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <input type="file" name="file" accept="image/*">
+  <img src="" alt="">
+  <div class="status"></div>
+
+  <script>
+    const input = document.querySelector('input[type="file"]');
+    const img = document.querySelector('img');
+    const status = document.querySelector('.status');
+    const storeKey = 'stored-image';
+
+    const dataUrl = localStorage.getItem(storeKey);
+    if (dataUrl) {
+      img.src = dataUrl;
+      status.innerText = "status: Loaded from localStorage.";
+    }
+
+    input.addEventListener('change', async (e) => {
+      const files = e.target.files;
+
+      if (files.length > 0) {
+        const file = files[0];
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+          const dataUrl = reader.result;
+          img.src = dataUrl;
+          status.innerText = "status: Loaded from input file.";
+          localStorage.setItem(storeKey, dataUrl);
+        });
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+</body>
+</html>
